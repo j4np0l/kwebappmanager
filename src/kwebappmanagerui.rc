@@ -1,0 +1,22 @@
+<!DOCTYPE kpartgui>
+<gui name="kwebappmanager" version="1">
+  <MenuBar>
+    <Menu name="file"><text>&amp;File</text>
+      <Action name="add_pwa"/>
+      <Action name="edit_pwa"/>
+      <Action name="remove_pwa"/>
+      <Separator/>
+      <Action name="options_quit"/>
+    </Menu>
+    <Menu name="webapp"><text>&amp;Web App</text>
+      <Action name="launch_pwa"/>
+    </Menu>
+  </MenuBar>
+  <ToolBar name="mainToolBar"><text>Main Toolbar</text>
+    <Action name="add_pwa"/>
+    <Action name="edit_pwa"/>
+    <Action name="remove_pwa"/>
+    <Separator/>
+    <Action name="launch_pwa"/>
+  </ToolBar>
+</gui>

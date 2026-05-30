@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Web App Manager
+Name[es]=Gestor de Aplicaciones Web
+Comment=Create and manage Progressive Web Apps in KDE Plasma
+Comment[es]=Crea y gestiona Aplicaciones Web Progresivas en KDE Plasma
+Exec=kwebappmanager
+Icon=applications-internet
+Categories=Qt;KDE;Network;
+Keywords=PWA;WebApp;Browser;Progressive;
+StartupNotify=true
