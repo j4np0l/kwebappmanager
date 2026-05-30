@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
 
     about.addAuthor(i18n("Juan"), i18n("Developer"), QStringLiteral("jparias1986@gmail.com"));
     KAboutData::setApplicationData(about);
-    QApplication::setWindowIcon(QIcon::fromTheme(QStringLiteral("applications-internet")));
+    QApplication::setWindowIcon(QIcon::fromTheme(QStringLiteral("kwebappmanager")));
 
     // KMainWindow sets WA_DeleteOnClose: the window must be heap-allocated
     // so that Qt's deferred-delete calls free() on a valid heap pointer.

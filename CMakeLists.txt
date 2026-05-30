@@ -31,5 +31,6 @@ find_package(KF6 REQUIRED COMPONENTS
 
 add_subdirectory(src)
 add_subdirectory(data)
+add_subdirectory(icons)
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
