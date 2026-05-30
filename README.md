@@ -1,5 +1,7 @@
 # KDE Web App Manager
 
+**Note:** I created (vibe coded) this because I wanted to have a clean way to create and manage PWAs on KDE. This is my first KDE app, Claude did most of the heavy lifting so there might be loads of IA slop code in here. You have been warned. In saying this, I would really appreaciate any sort of feedback if anyone happens to use this app.
+
 A KDE Plasma application for creating and managing Progressive Web Apps (PWAs) on Fedora KDE.
 
 Webapps are launched in a clean, browser-chrome-free window using Chromium's `--app=` mode or a custom Firefox profile, and are fully integrated into the KDE application launcher and task manager with their own icons.
