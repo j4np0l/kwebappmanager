@@ -4,7 +4,7 @@
 
 A KDE Plasma application for creating and managing Progressive Web Apps (PWAs) on Fedora KDE.
 
-Webapps are launched in a clean, browser-chrome-free window using Chromium's `--app=` mode or a custom Firefox profile, and are fully integrated into the KDE application launcher and task manager with their own icons.
+Web apps run in a clean, chrome-free window powered by an embedded Qt WebEngine (Chromium) view, and are fully integrated into the KDE application launcher and task manager with their own icons. Links that lead off the app's own site open in your default browser, so the window stays focused on the app itself.
 
 ![KDE Web App Manager](https://raw.githubusercontent.com/j4np0l/kwebappmanager/main/screenshots/main.png)
 
@@ -14,9 +14,10 @@ Webapps are launched in a clean, browser-chrome-free window using Chromium's `--
 
 - **Add web apps** from any URL with a name, icon, and category
 - **Fetch favicons** automatically from the site, or choose a custom image
-- **Isolated profiles** — each app gets its own browser profile so cookies, logins, and settings don't bleed between apps or your main browser
+- **Embedded web view** — apps run in their own Qt WebEngine window with no tabs or address bar; no external browser needed
+- **External links open in your default browser** — clicking a link to another site (or a `target=_blank` / `mailto:` link) hands off to your default browser instead of navigating the app away
+- **Isolated profiles** — each app gets its own persistent profile so cookies, logins, and settings don't bleed between apps or your main browser
 - **KDE integration** — apps appear in KDE's application launcher and icons-only task manager with their own icon
-- **Multi-browser support** — Chromium, Google Chrome, Brave, Microsoft Edge, and Firefox
 - **Edit and remove** apps at any time; removal cleans up the desktop entry and profile
 
 ---
@@ -26,14 +27,12 @@ Webapps are launched in a clean, browser-chrome-free window using Chromium's `--
 ### Runtime
 
 - KDE Plasma 6
-- At least one supported browser:
-  - Chromium / Google Chrome / Brave / Microsoft Edge (recommended — best PWA experience)
-  - Firefox
+- Qt 6 WebEngine (`qt6-qtwebengine`) — provides the embedded Chromium view; no separate browser required
 
 ### Build
 
 - CMake ≥ 3.20
-- Qt 6 (Core, Gui, Widgets, Network)
+- Qt 6 (Core, Gui, Widgets, Network, WebEngineWidgets)
 - KDE Frameworks 6: CoreAddons, I18n, XmlGui, WidgetsAddons, KIO, IconThemes, ConfigWidgets, Notifications
 - Extra CMake Modules (ECM)
 
@@ -42,7 +41,7 @@ Install build dependencies on Fedora:
 ```bash
 sudo dnf install \
   cmake extra-cmake-modules \
-  qt6-qtbase-devel qt6-qtnetwork-devel \
+  qt6-qtbase-devel qt6-qtnetwork-devel qt6-qtwebengine-devel \
   kf6-kcoreaddons-devel kf6-ki18n-devel kf6-kxmlgui-devel \
   kf6-kwidgetsaddons-devel kf6-kio-devel kf6-kiconthemes-devel \
   kf6-kconfigwidgets-devel kf6-knotifications-devel
@@ -76,7 +75,7 @@ kwebappmanager
 
 1. Click **Add Web App** (or press `Ctrl+N`)
 2. Enter a name and URL
-3. Choose a browser and category
+3. Pick a category, and choose whether to use a dedicated (isolated) profile
 4. Optionally click **Fetch from URL** to grab the site's favicon, or **Choose file…** for a custom icon
 5. Click **OK**
 
@@ -88,20 +87,28 @@ Double-click an entry in the list, press `Enter`, or click the **Launch** toolba
 
 ### Editing / Removing
 
-Select an entry and click **Edit** or **Remove** (or press `Delete`). Removing an app deletes its desktop entry and, if isolated profiles were enabled, its browser profile directory.
+Select an entry and click **Edit** or **Remove** (or press `Delete`). Removing an app deletes its desktop entry and, if an isolated profile was enabled, its profile directory.
 
 ---
 
 ## How it works
 
-| Browser | Launch mechanism | App-mode |
-|---|---|---|
-| Chromium / Chrome / Brave / Edge | `--app=<url> --class=<name> --user-data-dir=<profile>` | Native PWA window (no tabs or address bar) |
-| Firefox | `--new-instance --profile <dir>` + `userChrome.css` | Toolbars hidden via CSS; KWin provides window decorations |
+Each app gets a `.desktop` file written to `~/.local/share/applications/kwebapp-<id>.desktop`. Instead of launching an external browser, its `Exec` line re-invokes the manager in PWA runtime mode:
 
-Each app gets a `.desktop` file written to `~/.local/share/applications/kwebapp-<id>.desktop` with a matching `StartupWMClass` so KDE's task manager can associate the browser window with the correct icon.
+```
+kwebappmanager --app <id>
+```
 
-Isolated profiles are stored in `~/.local/share/kwebappmanager/profiles/<id>/`.
+In this mode the app hosts the page itself in an embedded `QWebEngineView` (Qt WebEngine / Chromium) with no tabs or address bar. Because the manager owns the window, it can control navigation:
+
+- **Same-site links** navigate within the app window (use `Alt+Left` / `Alt+Right` to go back/forward).
+- **Off-site links**, `target=_blank` / `window.open` popups, and `mailto:` / `tel:` links are handed to your default browser via `QDesktopServices::openUrl()`.
+
+The process sets its desktop file name to `kwebapp-<id>`, matching the `.desktop` entry's `StartupWMClass`, so KDE's task manager associates the window with the correct launcher and icon.
+
+The embedded view's user agent has the `QtWebEngine/<version>` token stripped (leaving a plain Chrome user agent) so sites that sniff for a "real" browser don't reject it.
+
+Isolated apps use a persistent WebEngine profile stored in `~/.local/share/kwebappmanager/profiles/<id>/`; non-isolated apps run off-the-record (nothing persists between launches).
 
 ---
 
