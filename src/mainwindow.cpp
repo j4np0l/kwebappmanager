@@ -143,7 +143,7 @@ void MainWindow::onSelectionChanged()
 
 void MainWindow::onAddPwa()
 {
-    AddPwaDialog dlg(PwaManager::availableBrowsers(), this);
+    AddPwaDialog dlg(this);
     if (dlg.exec() == QDialog::Accepted) {
         if (!m_manager->addPwa(dlg.entry()))
             KMessageBox::error(this, i18n("Failed to create the web app. Check that ~/.local/share/applications/ is writable."));
@@ -160,7 +160,7 @@ void MainWindow::onEditPwa()
                                  [&id](const PwaEntry &e) { return e.id == id; });
     if (it == pwas.end()) return;
 
-    AddPwaDialog dlg(*it, PwaManager::availableBrowsers(), this);
+    AddPwaDialog dlg(*it, this);
     if (dlg.exec() == QDialog::Accepted)
         m_manager->updatePwa(dlg.entry());
 }

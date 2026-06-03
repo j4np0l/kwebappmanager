@@ -9,7 +9,6 @@ struct PwaEntry {
     QString name;
     QString url;
     QString iconPath;
-    QString browser;   // "chromium", "brave", "google-chrome", "firefox"
     QString category;
     bool isolated;     // use dedicated profile dir
 };
@@ -27,7 +26,9 @@ public:
     bool removePwa(const QString &id);
     void launchPwa(const QString &id);
 
-    static QStringList availableBrowsers();
+    // Per-PWA data directory, reused as the embedded WebEngine profile storage
+    // path for isolated apps. Public so the PWA runtime window can locate it.
+    QString profileDir(const PwaEntry &entry) const;
 
 Q_SIGNALS:
     void pwaListChanged();
@@ -39,7 +40,6 @@ private:
     void removeDesktopFile(const PwaEntry &entry) const;
     QString dataDir() const;
     QString desktopFilePath(const PwaEntry &entry) const;
-    QString profileDir(const PwaEntry &entry) const;
 
     QList<PwaEntry> m_pwas;
 };

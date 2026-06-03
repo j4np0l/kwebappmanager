@@ -15,8 +15,8 @@ class AddPwaDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit AddPwaDialog(const QStringList &browsers, QWidget *parent = nullptr);
-    explicit AddPwaDialog(const PwaEntry &entry, const QStringList &browsers, QWidget *parent = nullptr);
+    explicit AddPwaDialog(QWidget *parent = nullptr);
+    explicit AddPwaDialog(const PwaEntry &entry, QWidget *parent = nullptr);
 
     PwaEntry entry() const;
 
@@ -27,12 +27,11 @@ private Q_SLOTS:
     void validate();
 
 private:
-    void setupUi(const QStringList &browsers);
+    void setupUi();
     void populate(const PwaEntry &e);
 
     QLineEdit *m_nameEdit;
     QLineEdit *m_urlEdit;
-    QComboBox *m_browserCombo;
     QComboBox *m_categoryCombo;
     QCheckBox *m_isolatedCheck;
     QLabel    *m_iconPreview;

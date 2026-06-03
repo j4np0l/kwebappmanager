@@ -33,26 +33,26 @@ static const QStringList kCategories = {
     QStringLiteral("Utility"),
 };
 
-AddPwaDialog::AddPwaDialog(const QStringList &browsers, QWidget *parent)
+AddPwaDialog::AddPwaDialog(QWidget *parent)
     : QDialog(parent)
     , m_nam(new QNetworkAccessManager(this))
 {
     setWindowTitle(tr("Add Web App"));
-    setupUi(browsers);
+    setupUi();
     connect(m_nam, &QNetworkAccessManager::finished, this, &AddPwaDialog::onFaviconFetched);
 }
 
-AddPwaDialog::AddPwaDialog(const PwaEntry &entry, const QStringList &browsers, QWidget *parent)
+AddPwaDialog::AddPwaDialog(const PwaEntry &entry, QWidget *parent)
     : QDialog(parent)
     , m_nam(new QNetworkAccessManager(this))
 {
     setWindowTitle(tr("Edit Web App"));
-    setupUi(browsers);
+    setupUi();
     populate(entry);
     connect(m_nam, &QNetworkAccessManager::finished, this, &AddPwaDialog::onFaviconFetched);
 }
 
-void AddPwaDialog::setupUi(const QStringList &browsers)
+void AddPwaDialog::setupUi()
 {
     auto *mainLayout = new QVBoxLayout(this);
 
@@ -66,13 +66,6 @@ void AddPwaDialog::setupUi(const QStringList &browsers)
     m_urlEdit = new QLineEdit(this);
     m_urlEdit->setPlaceholderText(tr("https://app.example.com"));
     form->addRow(tr("URL:"), m_urlEdit);
-
-    m_browserCombo = new QComboBox(this);
-    if (browsers.isEmpty())
-        m_browserCombo->addItem(tr("chromium (not found)"), QStringLiteral("chromium"));
-    for (const QString &b : browsers)
-        m_browserCombo->addItem(b, b);
-    form->addRow(tr("Browser:"), m_browserCombo);
 
     m_categoryCombo = new QComboBox(this);
     m_categoryCombo->addItem(tr("(none)"), QString());
@@ -130,9 +123,6 @@ void AddPwaDialog::populate(const PwaEntry &e)
     m_urlEdit->setText(e.url);
     m_isolatedCheck->setChecked(e.isolated);
 
-    const int idx = m_browserCombo->findData(e.browser);
-    if (idx >= 0) m_browserCombo->setCurrentIndex(idx);
-
     const int catIdx = m_categoryCombo->findData(e.category);
     if (catIdx >= 0) m_categoryCombo->setCurrentIndex(catIdx);
 
@@ -151,7 +141,6 @@ PwaEntry AddPwaDialog::entry() const
     e.id       = m_existingId;
     e.name     = m_nameEdit->text().trimmed();
     e.url      = m_urlEdit->text().trimmed();
-    e.browser  = m_browserCombo->currentData().toString();
     e.category = m_categoryCombo->currentData().toString();
     e.isolated = m_isolatedCheck->isChecked();
     e.iconPath = m_iconPath;

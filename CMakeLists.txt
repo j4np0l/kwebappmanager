@@ -17,7 +17,7 @@ include(KDECMakeSettings)
 include(KDECompilerSettings NO_POLICY_SCOPE)
 include(FeatureSummary)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Network)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Network WebEngineWidgets)
 find_package(KF6 REQUIRED COMPONENTS
     CoreAddons
     I18n
