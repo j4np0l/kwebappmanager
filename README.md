@@ -6,8 +6,6 @@ A KDE Plasma application for creating and managing Progressive Web Apps (PWAs) o
 
 Web apps run in a clean, chrome-free window powered by an embedded Qt WebEngine (Chromium) view, and are fully integrated into the KDE application launcher and task manager with their own icons. Links that lead off the app's own site open in your default browser, so the window stays focused on the app itself.
 
-![KDE Web App Manager](https://raw.githubusercontent.com/j4np0l/kwebappmanager/main/screenshots/main.png)
-
 ---
 
 ## Features
